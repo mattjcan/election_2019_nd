@@ -1153,8 +1153,8 @@ pal_aus <- colorBin(c("red", "pink", "light blue", "blue"), domain = tpp_aus$swi
 
 m_aus <- leaflet(data = tpp_aus) %>% 
   addProviderTiles("CartoDB") %>% 
-  addCircleMarkers(data = tpp_aus %>% filter(swing_10 == "Above 10%"), fillOpacity = 1, color = ~pal_aus(swing), radius = 3, stroke = FALSE, popup = ~popup_label, group = "Above 10%") %>% 
   addCircleMarkers(data = tpp_aus %>% filter(swing_10 == "Under 10%"), fillOpacity = 1, color = ~pal_aus(swing), radius = 3, stroke = FALSE, popup = ~popup_label, group = "Under 10%") %>% 
+  addCircleMarkers(data = tpp_aus %>% filter(swing_10 == "Above 10%"), fillOpacity = 1, color = ~pal_aus(swing), radius = 3, stroke = FALSE, popup = ~popup_label, group = "Above 10%") %>% 
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "TPP Swing to LNP (%)", pal = pal_aus, values = c(-30, 30), position = "bottomright") %>% 
   addLayersControl(overlayGroups = c("Above 10%", "Under 10%"))
