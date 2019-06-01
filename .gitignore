@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/COM_ELB_region.dbf
+data/COM_ELB_region.prj
+data/COM_ELB_region.shp
+data/COM_ELB_region.shx
