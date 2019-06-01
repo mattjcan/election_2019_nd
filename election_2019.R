@@ -37,7 +37,7 @@ line_color <- "#2166ac"
 
 # IMPORT ------------------------------------------------------------------
 
-d <- "C:/Users/matt/Dropbox/2a. Election/data/election_2019/" # parent directory for the data
+d <- "C:/Users/matt/data_nd/election_2019_nd/" # parent directory for the data
 
 prepoll <- read_csv(paste0(d,"data/20190516_WEB_Pre-poll_Report_FE2019.csv"), skip = 0)
 
@@ -1171,6 +1171,8 @@ m_aus_tpp <- leaflet(data = tpp_aus) %>%
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "LNP TPP (%)", pal = pal_aus_tpp, values = c(0, 100), position = "bottomright") 
 
+saveWidget(m_aus_tpp, file="m_aus_tpp.html", selfcontained = F)
+
 # one nation primary
 
 p_fed_on <- p_by_pp %>% 
@@ -1188,6 +1190,9 @@ m_on <- leaflet(data = p_fed_on) %>%
   addCircleMarkers(fillOpacity = 1, color = ~pal_on(p), radius = 3, stroke = FALSE, popup = ~popup_label) %>% 
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "One Nation primary (%)", pal = pal_on, values = c(0, 50), position = "bottomright") 
+
+saveWidget(m_on, file="m_on.html", selfcontained = F)
+
 
 # green primary
 
@@ -1207,6 +1212,7 @@ m_grn <- leaflet(data = p_fed_grn) %>%
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "Greens primary (%)", pal = pal_grn, values = c(0, 70), position = "bottomright") 
 
+saveWidget(m_grn, file="m_grn.html", selfcontained = F)
 
 # EXPORT ---- 
 
