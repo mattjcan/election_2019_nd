@@ -469,13 +469,13 @@ coordinates(tpp_sp) <- ~lon + lat
 f_tpp_pp <- function(di) {
   
 tpp %>% 
-  filter(year == "2019" & div == di & p_lnp != 0) %>% 
+  filter(year == "2019" & div == di & p_lnp != 0 & v_t > 250) %>% 
   ggplot(aes(x = reorder(pp, p_lnp), y = p_lnp))  + 
   geom_bar(stat = "identity", color = line_color, fill = line_color, position = position_dodge(width=.6), width = 0.3 ) +
   theme_mc +
-  labs(title = paste("LNP TPP in", di), subtitle = "", x = "", y = "") +
+  labs(title = paste("LNP TPP in", di), subtitle = "", x = "", y = "", caption = "Note: only polling booths with more than 250 votes") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1.2) +
+  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1.6) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
     ylim(0, 110)
 }
@@ -487,13 +487,13 @@ names(p_tpp_pp) <- unique(tpp$div)
 f_tpp_pp_swing <- function(di) {
   
   tpp %>% 
-    filter(year == "2019" & div == di & swing != 0) %>% 
+    filter(year == "2019" & div == di & swing != 0& v_t > 250) %>% 
     ggplot(aes(x = reorder(pp, swing), y = swing))  + 
     geom_bar(stat = "identity", color = line_color, fill = line_color, position = position_dodge(width=.6), width = 0.3 ) +
     theme_mc +
-    labs(title = paste("LNP TPP swing in", di), subtitle = "", x = "", y = "") +
+    labs(title = paste("LNP TPP swing in", di), subtitle = "", x = "", y = "", caption = "Note: only polling booths with more than 250 votes") +
     theme(panel.grid.major = element_blank()) +
-    geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1.2) +
+    geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1.6) +
     theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
     ylim(-20, 40)
 }
@@ -546,6 +546,31 @@ p_tpp_flynn_2_swing <- tpp %>%
   geom_text(aes(label = paste(round(swing,1))), vjust = -1, size=1.2) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
   ylim(-20, 40)
+
+p_prim_pp_daw <- p_by_pp %>% 
+  filter(year == "2019" & div == "Dawson" & party == "LNP" & v > 120) %>% 
+  ggplot(aes(x = reorder(pp, p), y = p * 100))  + 
+  geom_bar(stat = "identity", color = line_color, fill = line_color, position = position_dodge(width=.6), width = 0.3 ) +
+  theme_mc +
+  labs(title = paste("LNP primary in", "Dawson"), subtitle = "", x = "", y = "", caption = "Note: only polling booths with more than 250 votes") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=1.6) +
+  theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) 
+
+p_prim_pp_swing_daw <- p_by_pp %>% 
+  filter(year == "2019" & div == "Dawson" & party == "LNP" & swing != 0 & v > 120) %>% 
+  ggplot(aes(x = reorder(pp, swing), y = swing))  + 
+  geom_bar(stat = "identity", color = line_color, fill = line_color, position = position_dodge(width=.6), width = 0.3 ) +
+  theme_mc +
+  labs(title = paste("LNP primary swing in", "Dawson"), subtitle = "", x = "", y = "", caption = "Note: only polling booths with more than 250 votes") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1.6) +
+  theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
+  ylim(-15, 15)
+
+
+
+
 
 # tpp by division
 
@@ -1576,6 +1601,8 @@ m_daw <- leaflet(data = tpp_daw_19) %>%
   addLegend(title = "TPP Swing to LNP (%)", pal = pal_daw, values = c(-30, 30), position = "bottomright") %>% 
   addLayersControl(overlayGroups = c("Above 15%", "Under 15%"))
 
+# saveWidget(m_daw, file="m_daw.html")
+
 # swing prim
 
 pal_daw_prim_s <- colorBin(c("#d80000", "#ff1414", "#ff4e4e", "#ff8989", "#ffc4c4" ,"#c4c4ff" , "#8989ff" , "#4e4eff", "#1414ff", "#0000d8"), domain = tpp_daw$swing, bins = c(-50, -20, -15, -10, -5, 0, 5, 10, 15, 20, 50))
@@ -1585,6 +1612,8 @@ m_daw_prim_s <- leaflet(data = prim_daw_19_lnp) %>%
   addCircleMarkers(data = prim_daw_19_lnp, fillOpacity = 1, color = ~pal_daw_prim_s(swing), radius = 3, stroke = FALSE, popup = ~popup_label) %>% 
   addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "Primary Swing to LNP (%)", pal = pal_daw_prim_s, values = c(-50, 50), position = "bottomright")
+
+# saveWidget(m_daw_prim_s, file="m_daw_prim_s.html")
 
 # prim
 
@@ -1596,6 +1625,8 @@ m_daw_prim <- leaflet(data = prim_daw_19_lnp) %>%
   addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "Primary LNP vote (%)", pal = pal_daw_prim, values = c(0, 100), position = "bottomright")
 
+# saveWidget(m_daw_prim, file="m_daw_prim.html")
+
 # tpp
 
 pal_daw_tpp <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = tpp_coal$p_lnp, bins = c(0, 30, 40, 45, 50, 55, 60, 70, 100))
@@ -1606,7 +1637,7 @@ m_daw_tpp <- leaflet(data = tpp_daw_19) %>%
   addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "LNP TPP (%)", pal = pal_daw_tpp, values = c(0, 100), position = "bottomright") 
 
-saveWidget(m_daw_tpp, file="m_daw_tpp.html")
+# saveWidget(m_daw_tpp, file="m_daw_tpp.html")
 
 
 # plots
@@ -1717,7 +1748,7 @@ p_prim_daw_subreg_s_rw <-  prim_daw_subreg_rw %>%
 
 # tpp by subregion in 2019
 
-p_tpp_daw_subrg <- tpp_daw_subreg %>% 
+p_tpp_daw_subreg <- tpp_daw_subreg %>% 
   filter(year == "2019" & subregion != "other") %>% 
   ggplot(aes(x = reorder(subregion, -p_lnp), y = p_lnp * 100))  + 
   geom_bar(stat = "identity", fill = "blue") +
@@ -1730,7 +1761,7 @@ p_tpp_daw_subrg <- tpp_daw_subreg %>%
 
 # tpp swing by subregion in 2019
 
-p_tpp_daw_subrg_s <- tpp_daw_subreg %>% 
+p_tpp_daw_subreg_s <- tpp_daw_subreg %>% 
   filter(year == "2019" & subregion != "other") %>% 
   ggplot(aes(x = reorder(subregion, -s), y = s * 100))  + 
   geom_bar(stat = "identity", fill = "blue") +
@@ -1773,7 +1804,7 @@ f_prim_daw_lnp_sub <- function(subr) {
     labs(title = paste("LNP votes in", subr, "region"), subtitle = "", x = "", y = "") +
     theme(panel.grid.major = element_blank()) +
     geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
-    ylim(0, 60) +
+    ylim(0, 70) +
     theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
 }
 

@@ -1,5 +1,5 @@
 ---
-title: "2019 election results in coal seats"
+title: "Dawson 2019 election results"
 author: 
 date: 
 output:
@@ -72,12 +72,6 @@ grid.arrange(p_tpp_coal, p_tpp_coal_swing, ncol = 1)
 
 ]
 
-# The carbon tax played a cameo role
-
-- Regional modelling from Brian Fisher was used in the last week to cement Bill Shorten and Labor as anti-jobs.  
-
-![](images\coal_jobs.jpg)
-
 ---
 
 # The LNP did well
@@ -108,52 +102,122 @@ grid.arrange(p_pd_coal$Flynn, p_pd_coal$Capricornia, p_pd_coal$Dawson, p_pd_coal
 
 ---
 
-# Labor primary vote has collapsed
+# Strong primary vote across Dawson
 
 ``` {r }
-grid.arrange(p_prim_cap_alp$Rockhampton, p_prim_cap_alp$Coast, p_prim_cap_alp$Mining, p_prim_cap_alp$Sarina, ncol = 2)
+p_prim_daw_subreg
 ```
 
 ---
 
-# LNP primary vote has stabilised
+# But there were mixed swings on primaries
 
 ``` {r }
-grid.arrange(p_prim_cap_lnp$Rockhampton, p_prim_cap_lnp$Coast, p_prim_cap_lnp$Mining, p_prim_cap_lnp$Sarina, ncol = 2)
+p_prim_daw_subreg_s
 ```
 
 ---
 
-# One Nation strongest in rural areas
+# All regions provided a TPP swing
 
 ``` {r }
-p_prim_cap_on
+p_tpp_daw_subreg_s
 ```
 
 ---
 
-# Map of results
+# Leaving a strong TPP outcome in Dawson
+
+``` {r }
+p_tpp_daw_subreg
+```
+
+---
+
+# The Labor vote collapsed
+
+``` {r }
+p_prim_daw_subreg_s_alp
+```
+
+---
+
+# The Labor vote collapsed
+
+``` {r }
+p_prim_daw_subreg_alp
+```
+
+---
+
+# The right wing vote is concentrated
+
+``` {r }
+p_prim_daw_subreg_rw
+```
+
+---
+
+# LNP primary vote over time
+
+``` {r }
+grid.arrange(p_prim_daw_lnp_sub$Airlie, p_prim_daw_lnp_sub$Bowen, p_prim_daw_lnp_sub$Burdekin, p_prim_daw_lnp_sub$Townsville, ncol = 2)
+```
+
+---
+
+# LNP primary vote over time
+
+``` {r }
+grid.arrange(p_prim_daw_lnp_sub$`Mackay - north`, p_prim_daw_lnp_sub$`Mackay - south`, p_prim_daw_lnp_sub$Islands, p_prim_daw_lnp_sub$Rural, ncol = 2)
+```
+
+---
+
+# Labor primary vote over time
+
+``` {r }
+grid.arrange(p_prim_daw_alp_sub$Airlie, p_prim_daw_alp_sub$Bowen, p_prim_daw_alp_sub$Burdekin, p_prim_daw_alp_sub$Townsville, ncol = 2)
+```
+
+---
+
+# Labor primary vote over time
+
+``` {r }
+grid.arrange(p_prim_daw_alp_sub$`Mackay - north`, p_prim_daw_alp_sub$`Mackay - south`, p_prim_daw_alp_sub$Islands, p_prim_daw_alp_sub$Rural, ncol = 2)
+```
+
+---
+
+# TPP results
 
 ```{r }
-frameWidget(m_aus, width='100%', height = '500px')
+frameWidget(m_daw_tpp, width='100%', height = '500px')
 ```
 
 ---
 
-# Polling booths in Herbert
+# TPP swing
 
-
-
-``` {r }
-p_tpp_pp$Herbert
+```{r }
+frameWidget(m_daw, width='100%', height = '500px')
 ```
 
 ---
 
-# Polling booth swings in Herbert
+# Primary results
 
-``` {r }
-p_tpp_pp_swing$Herbert
+```{r }
+frameWidget(m_daw_prim, width='100%', height = '500px')
+```
+
+---
+
+# Primary results
+
+```{r }
+frameWidget(m_daw_prim_s, width='100%', height = '500px')
 ```
 
 ---
@@ -174,48 +238,16 @@ p_tpp_pp_swing$Dawson
 
 ---
 
-# Polling booths in Capricornia
+# Polling booths in Dawson
 
 ``` {r }
-p_tpp_pp$Capricornia
+p_prim_pp_daw
 ```
 
 ---
 
-# Polling booth swings in Capricornia
+# Polling booth swings in Dawson
 
 ``` {r }
-p_tpp_pp_swing$Capricornia
-```
-
----
-
-# Polling booths in Flynn
-
-``` {r }
-p_tpp_flynn_1
-```
-
----
-
-# Polling booths in Flynn
-
-``` {r }
-p_tpp_flynn_2
-```
-
----
-
-# Polling booth swings in Flynn
-
-``` {r }
-p_tpp_flynn_1_swing
-```
-
----
-
-# Polling booth swings in Flynn
-
-``` {r }
-p_tpp_flynn_2_swing
+p_prim_pp_swing_daw
 ```
