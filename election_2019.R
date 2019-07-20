@@ -21,7 +21,7 @@ background <- c("#e5e5df")
 
 theme_mc <- theme_economist() + 
   theme(legend.position="none") + 
-  theme(plot.title = element_text(size = 14, face = "bold")) +
+  theme(plot.title = element_text(size = 10, face = "bold")) +
   theme(axis.text = element_text(size = 10, vjust = 0.3, hjust = 0.5)) +
   theme(axis.title.y = element_text(size = 10)) +
   theme(axis.line = element_blank()) +
@@ -29,7 +29,8 @@ theme_mc <- theme_economist() +
   theme(plot.caption = element_text(hjust = 0, size = 9)) +
   theme(plot.background = element_rect(fill = background)) +  
   theme(panel.background = element_rect(fill = background)) +   
-  theme(panel.grid.major.y =  element_line(color = "#b3b3b3", size = 0.2))
+  theme(panel.grid.major.y =  element_line(color = "#b3b3b3", size = 0.2)) +
+  theme(axis.text.y = element_blank())
 
 stroke_size <- 0.75
 
@@ -303,9 +304,9 @@ tcp <- tcp  %>%
          v_t = TotalVotes, 
          swing = Swing)
 
-tcp[tcp$div == "New England" & tcp$party == "NP" & tcp$year == "2019", ]$swing <- 13.82
+# tcp[tcp$div == "New England" & tcp$party == "NP" & tcp$year == "2019", ]$swing <- 13.82
 
-tcp[tcp$div == "New England" & tcp$party == "IND" & tcp$year == "2019", ]$swing <- -13.82
+# tcp[tcp$div == "New England" & tcp$party == "IND" & tcp$year == "2019", ]$swing <- -13.82
 
 #tcp_n <- tcp
 
@@ -335,6 +336,8 @@ tcp <- left_join(tcp, tcp_lnp, by = "div")
   #mutate(p = v / sum(v))
 
 # TRANSFORM ---- 
+
+
   
 # nats analysis
 
@@ -423,20 +426,34 @@ p_by_pp_sp <- p_by_pp_sp[!is.na(p_by_pp_sp$lon), ]
 
 coordinates(p_by_pp_sp) <- ~lon + lat
 
-# tpp
+# primary vote by division
 
-tpp_by_div <- tpp %>% 
-  group_by(div_id, div, year) %>% 
-  summarise(v_lnp = sum(v_lnp),
-            v_t = sum(v_t),
-            p_lnp = v_lnp / v_t)
+# primary votes
 
-tpp_by_party <- tpp %>% 
-  group_by(year) %>% 
-  summarise(v_lnp = sum(v_lnp),
-            v_t = sum(v_t),
-            p_lnp = v_lnp / v_t
-  )
+pd$party_lnp <- ifelse(pd$party %in% c("LP", "NP", "CLP", "LNP", "LNQ"), "LNP", pd$party)
+
+prim_by_state <- pd %>% 
+  group_by(year, state, party, party_n, lab, lab_coal) %>% 
+  summarise(v = sum(tot_v)) %>% 
+  ungroup() %>% 
+  group_by(year, state) %>%
+  mutate(p = v / sum(v))
+
+prim_by_state_lnp <- pd %>% 
+  group_by(year, state, party_lnp) %>% 
+  summarise(v = sum(tot_v)) %>% 
+  ungroup() %>% 
+  group_by(year, state) %>%
+  mutate(p = v / sum(v))
+
+# tpp by polling place
+
+#tpp_by_div <- tpp %>% 
+ # group_by(div_id, div, year) %>% 
+  #summarise(v_lnp = sum(v_lnp),
+   #         v_t = sum(v_t),
+    #        p_lnp = v_lnp / v_t)
+
 
 tpp$lat <- pb_fed$lat[match(tpp$pp_id, pb_fed$pp_id)]
 
@@ -458,7 +475,7 @@ tpp %>%
   theme_mc +
   labs(title = paste("LNP TPP in", di), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1) +
+  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1.2) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
     ylim(0, 110)
 }
@@ -476,7 +493,7 @@ f_tpp_pp_swing <- function(di) {
     theme_mc +
     labs(title = paste("LNP TPP swing in", di), subtitle = "", x = "", y = "") +
     theme(panel.grid.major = element_blank()) +
-    geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1) +
+    geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1.2) +
     theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
     ylim(-20, 40)
 }
@@ -492,7 +509,7 @@ p_tpp_flynn_1 <- tpp %>%
   theme_mc +
   labs(title = paste("LNP TPP in", "Flynn"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1) +
+  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1.2) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
   ylim(0, 110)
 
@@ -503,7 +520,7 @@ p_tpp_flynn_2 <- tpp %>%
   theme_mc +
   labs(title = paste("LNP TPP in", "Flynn"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1) +
+  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=1.2) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
   ylim(0, 110)
 
@@ -515,7 +532,7 @@ p_tpp_flynn_1_swing <- tpp %>%
   theme_mc +
   labs(title = paste("LNP TPP swing in", "Flynn"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1) +
+  geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=1.2) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
   ylim(-20, 40)
 
@@ -526,27 +543,48 @@ p_tpp_flynn_2_swing <- tpp %>%
   theme_mc +
   labs(title = paste("LNP TPP swing in", "Flynn"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(swing,1))), vjust = -1, size=1) +
+  geom_text(aes(label = paste(round(swing,1))), vjust = -1, size=1.2) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
   ylim(-20, 40)
+
+# tpp by division
+
+tpp_by_party <- tpp_div %>% 
+  group_by(year) %>% 
+  summarise(v_lnp = sum(v_lnp),
+            v_t = sum(v_t),
+            p_lnp = v_lnp / v_t,
+            v_alp = sum(v_alp),
+            p_alp = v_alp / v_t) %>% 
+  mutate(swing = p_lnp - lag(p_lnp, 1))
+
+tpp_by_state <- tpp_div %>% 
+  group_by(year, state) %>% 
+  summarise(v_lnp = sum(v_lnp),
+            v_t = sum(v_t),
+            p_lnp = v_lnp / v_t,
+            v_alp = sum(v_alp),
+            p_alp = v_alp / v_t) %>% 
+  arrange(state, year) %>% 
+  ungroup() %>% 
+  mutate(swing = p_lnp - lag(p_lnp, 1))
 
 # CQ / NQ COAL ANALYSIS ---- 
 
 
 # tpp 
 
-tpp_coal_div <- tpp_by_div %>% 
+tpp_div$coal <- ifelse(tpp_div$div %in% coal_seats, "coal", "non-coal")
+
+tpp_div$qld <- ifelse(tpp_div$state == "QLD", "qld", "non-qld")
+
+tpp_div$coal_type <- ifelse(tpp_div$coal == "coal", "Coal", ifelse((tpp_div$coal == "non-coal" & tpp_div$state == "QLD"), "Qld (non-coal)", "Rest of Aus"))
+
+tpp_coal_div <- tpp_div %>% 
   filter(div %in% coal_seats) %>% 
-  mutate(swing = p_lnp - lag(p_lnp)) %>% 
   filter(year == "2019")
-
-tpp$coal <- ifelse(tpp$div %in% coal_seats, "coal", "non-coal")
-
-tpp$qld <- ifelse(tpp$state == "QLD", "qld", "non-qld")
-
-tpp$coal_type <- ifelse(tpp$coal == "coal", "Coal", ifelse((tpp$coal == "non-coal" & tpp$state == "QLD"), "Qld (non-coal)", "Rest of Aus"))
   
-tpp_coal <- tpp %>% 
+tpp_coal <- tpp_div %>% 
   group_by(coal_type, year) %>% 
   summarise(v_lnp = sum(v_lnp),
             v_t = sum(v_t),
@@ -570,7 +608,7 @@ p_tpp_coal <- tpp_coal %>%
   theme(panel.grid.major = element_blank()) +
   geom_text(aes(label = paste(round(p_lnp * 100,1))), vjust = -1, size=3) +
   scale_fill_manual(values = c("black", "blue", "maroon")) +
-  ylim(0,75)
+  ylim(0,80)
 
 p_tpp_coal_swing <- tpp_coal %>% 
   filter(year == "2019") %>% 
@@ -583,28 +621,27 @@ p_tpp_coal_swing <- tpp_coal %>%
   scale_fill_manual(values = c("black", "blue", "maroon"), labels = c("non-qld" = "Outside QLD", "qld" = "QLD", "coal" = "Coal seats")) +
   ylim(0, 25)
 
-p_tpp_coal_div <- tpp_by_div %>% 
+p_tpp_coal_div <- tpp_coal_div %>% 
   filter(year == "2019" & div %in% coal_seats) %>% 
-  ggplot(aes(x = reorder(div, p_lnp), y = p_lnp * 100))  + 
+  ggplot(aes(x = reorder(div, p_lnp), y = p_lnp))  + 
   geom_bar(stat = "identity", fill = line_color) +
   theme_mc +
   labs(title = paste("LNP TPP in coal seats"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(p_lnp * 100,1))), vjust = -1, size=3) + 
-  ylim(0, 75)
+  geom_text(aes(label = paste(round(p_lnp,1))), vjust = -1, size=3) + 
+  ylim(0, 80)
   
 p_tpp_coal_div_swing <- tpp_coal_div %>% 
   filter(year == "2019" & div %in% coal_seats) %>% 
-  ggplot(aes(x = reorder(div, swing), y = swing * 100))  + 
+  ggplot(aes(x = reorder(div, swing), y = swing))  + 
   geom_bar(stat = "identity", fill = line_color) +
   theme_mc +
   labs(title = paste("LNP TPP swing in coal seats"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
-  geom_text(aes(label = paste(round(swing * 100,1))), vjust = -1, size=3) + 
+  geom_text(aes(label = paste(round(swing,1))), vjust = -1, size=3) + 
   ylim(0, 25)
 
 # tpp 
-  
 
 p_pd_coal_alp <- pd %>% 
   filter(year == "2019" & div %in% coal_seats & party == "ALP") %>% 
@@ -670,7 +707,8 @@ f_pd_coal <- function(di) {
   theme(panel.grid.major = element_blank()) +
   geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
   scale_fill_manual(values = c(LNP = "blue", Labor = "red", "One Nation" = "orange", Katter = "maroon", Palmer = "yellow", Greens = "green")) +
-  ylim(0, 50)
+  ylim(0, 50) +
+  theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
 }
 
 p_pd_coal <- map(coal_seats, f_pd_coal) 
@@ -701,7 +739,7 @@ p_pd_coal_alp_swing <- pd %>%
   ggplot(aes(x = reorder(div, p), y = swing))  + 
   geom_bar(fill = "red", stat = "identity") +
   theme_mc +
-  labs(title = paste("Labor primary vote in coal seats"), subtitle = "", x = "", y = "") +
+  labs(title = paste("Labor primary vote swing in coal seats"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
   geom_text(aes(label = paste(round(swing,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=3) +
   ylim(-30, 30)
@@ -709,6 +747,8 @@ p_pd_coal_alp_swing <- pd %>%
 # NATS ANALYSIS ---- 
 
 # PLOTS ----
+
+# primary votes by party
 
 f_party <- function(yr) {
 pd_by_party %>% 
@@ -730,6 +770,7 @@ p_party <- map(unique(pd_by_party$year), f_party)
 
 names(p_party) <- unique(pd_by_party$year)
 
+# primary vote swing 
 
 f_party_swing <- function(yr) {
 pd_by_party %>% 
@@ -750,6 +791,149 @@ pd_by_party %>%
 p_party_swing <- map(unique(pd_by_party$year), f_party_swing)
 
 names(p_party_swing) <- unique(pd_by_party$year)
+
+# primary votes by party
+
+f_party_year <- function(par) {
+  
+  max_y <- max(pd_by_party[pd_by_party$lab == par, ]$p) * 1.2
+  
+  pd_by_party %>% 
+    ungroup() %>% 
+    filter(lab == par) %>% 
+    ggplot(aes(x = year, y = p * 100))  + 
+    geom_bar(stat="identity", fill = line_color) + 
+    theme_mc +
+    labs(title = paste("Primary votes -", par), caption = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+    ylim(0, max_y * 100)
+}
+
+p_party_year <- map(unique(pd_by_party$lab), f_party_year)
+
+names(p_party_year) <- unique(pd_by_party$lab)
+
+# primary votes by state
+
+
+f_prim_lnp <- function(st) {
+p_prim_lnp <- prim_by_state_lnp %>%
+  filter(party_lnp == "LNP" & state == st) %>% 
+  ggplot(aes(x = year, y = p * 100))  + 
+  geom_bar(stat="identity", fill = line_color) + 
+  theme_mc +
+  labs(title = paste("LNP primary vote -", st), caption = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+  ylim(0, 65)
+}
+
+p_prim_lnp <- map(unique(prim_by_state_lnp$state), f_prim_lnp)
+
+names(p_prim_lnp) <- unique(prim_by_state_lnp$state)
+
+p_tpp_alp <- tpp_by_party %>% 
+  ggplot(aes(x = year, y = p_alp * 100, fill = elected))  + 
+  geom_bar(stat="identity") + 
+  theme_mc +
+  labs(title = paste("Two party preferred for Labor"), caption = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p_alp * 100,1))), vjust = -1, size=3) +
+  scale_fill_manual(values = c(alp = "red", lnp = "blue")) +
+  ylim(0, 75)
+
+f_tpp_swing <- function(yr) {
+  
+  tpp_by_state %>% 
+    ungroup() %>% 
+    filter(year == yr) %>% 
+    ggplot(aes(x = reorder(state, -swing), y = swing * 100, fill = state))  +
+    geom_bar(stat="identity") + 
+    theme_mc +
+    labs(title = paste("TPP swing -", yr), caption = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(swing * 100,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=3) +
+    scale_fill_manual(values = c(ACT = "blue", VIC = "blue", QLD = "maroon", WA = "yellow", NSW = "light blue", SA = "red", TAS = "dark green", NT = "orange")) +
+    ylim(-5, 5)
+}
+
+p_tpp_swing <- map(unique(tpp_by_state$year), f_tpp_swing)
+
+names(p_tpp_swing) <- unique(tpp_by_state$year)
+
+
+# tpp charts
+
+tpp_by_party$elected <- c("alp", "alp", "lnp", "lnp", "lnp")
+
+p_tpp_lnp <- tpp_by_party %>% 
+  ggplot(aes(x = year, y = p_lnp * 100, fill = elected))  + 
+  geom_bar(stat="identity") + 
+  theme_mc +
+  labs(title = paste("Two party preferred for LNP"), caption = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p_lnp * 100,1))), vjust = -1, size=3) +
+  scale_fill_manual(values = c(alp = "red", lnp = "blue")) +
+  ylim(0, 75)
+
+p_tpp_alp <- tpp_by_party %>% 
+  ggplot(aes(x = year, y = p_alp * 100, fill = elected))  + 
+  geom_bar(stat="identity") + 
+  theme_mc +
+  labs(title = paste("Two party preferred for Labor"), caption = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p_alp * 100,1))), vjust = -1, size=3) +
+  scale_fill_manual(values = c(alp = "red", lnp = "blue")) +
+  ylim(0, 75)
+
+f_tpp_swing <- function(yr) {
+  
+  tpp_by_state %>% 
+    ungroup() %>% 
+    filter(year == yr) %>% 
+    ggplot(aes(x = reorder(state, -swing), y = swing * 100, fill = state))  +
+    geom_bar(stat="identity") + 
+    theme_mc +
+    labs(title = paste("TPP swing -", yr), caption = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(swing * 100,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=3) +
+    scale_fill_manual(values = c(ACT = "blue", VIC = "blue", QLD = "maroon", WA = "yellow", NSW = "light blue", SA = "red", TAS = "dark green", NT = "orange")) +
+    ylim(-5, 5)
+}
+
+p_tpp_swing <- map(unique(tpp_by_state$year), f_tpp_swing)
+
+names(p_tpp_swing) <- unique(tpp_by_state$year)
+
+
+# tpp by state
+
+tpp_by_state$elected <- ifelse(tpp_by_state$p_lnp > 0.5, "lnp", "alp")
+
+f_tpp_state <- function(st) {
+  
+  tpp_by_state %>% 
+    ungroup() %>% 
+    filter(state == st) %>% 
+    ggplot(aes(x = year, y = p_lnp * 100, fill = elected))  + 
+    geom_bar(stat="identity") + 
+    theme_mc +
+    labs(title = paste("LNP TPP in", st), caption = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(p_lnp * 100,1))), vjust = -1, size=3) +
+    scale_fill_manual(values = c(alp = "red", lnp = "blue")) +
+    ylim(0, 75)
+}
+
+p_tpp_state <- map(unique(tpp_by_state$state), f_tpp_state)
+
+names(p_tpp_state) <- unique(tpp_by_state$state)
+
+
+
+
+# coalition, libs v nats
 
 p_coalition <- coalition %>% 
   ggplot(aes(x = year, y = index, color = lab, group = lab)) + 
@@ -1083,8 +1267,14 @@ p_act <- early %>%
 
 tpp$popup_label <- paste0("<b>", tpp$pp, "</b>", "<br/>", "LNP TPP: ", tpp$p_lnp, "%", "<br/>", "TPP Swing: ", tpp$swing, "%", "<br/>", "Votes: ", tpp$v_t)
 
+p_by_pp$popup_label <- paste0("<b>", p_by_pp$pp, "</b>", "<br/>", "LNP Primary: ", round(p_by_pp$p * 100, 1), "%", "<br/>", "Primary Swing: ", round(p_by_pp$swing, 1), "%")
+
 tpp <- tpp %>% 
   mutate(swing_10 = ifelse(swing >= 10, "Above 10%", "Under 10%"))
+
+tpp <- tpp %>% 
+  mutate(swing_15 = ifelse(swing >= 15, "Above 15%", "Under 15%"))
+
 
 # coal swing
 
@@ -1143,13 +1333,14 @@ m_qld_tpp <- leaflet(data = tpp_qld) %>%
   addLegend(title = "LNP TPP (%)", pal = pal_qld_tpp, values = c(0, 100), position = "bottomright") 
 
 
+
 # aus
 
 tpp_aus <- tpp %>% 
   filter(year == "2019" & p_lnp != 0) %>% 
   drop_na()
 
-pal_aus <- colorBin(c("red", "pink", "light blue", "blue"), domain = tpp_aus$swing, bins = c(-30, -10, 0, 10, 30))
+pal_aus <- colorBin(c("red", "#F08080", "pink", "light blue", "blue", "#00304E"), domain = tpp_aus$swing, bins = c(-30, -20, -10, 0, 10, 20, 30))
 
 m_aus <- leaflet(data = tpp_aus) %>% 
   addProviderTiles("CartoDB") %>% 
@@ -1159,7 +1350,7 @@ m_aus <- leaflet(data = tpp_aus) %>%
   addLegend(title = "TPP Swing to LNP (%)", pal = pal_aus, values = c(-30, 30), position = "bottomright") %>% 
   addLayersControl(overlayGroups = c("Above 10%", "Under 10%"))
 
-saveWidget(m_aus, file="m_aus.html", selfcontained = F)
+# saveWidget(m_aus, file="m_aus.html", selfcontained = F)
 
 # aus tpp
 
@@ -1171,7 +1362,7 @@ m_aus_tpp <- leaflet(data = tpp_aus) %>%
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "LNP TPP (%)", pal = pal_aus_tpp, values = c(0, 100), position = "bottomright") 
 
-saveWidget(m_aus_tpp, file="m_aus_tpp.html", selfcontained = F)
+# saveWidget(m_aus_tpp, file="m_aus_tpp.html", selfcontained = F)
 
 # one nation primary
 
@@ -1191,7 +1382,7 @@ m_on <- leaflet(data = p_fed_on) %>%
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "One Nation primary (%)", pal = pal_on, values = c(0, 50), position = "bottomright") 
 
-saveWidget(m_on, file="m_on.html", selfcontained = F)
+# saveWidget(m_on, file="m_on.html", selfcontained = F)
 
 
 # green primary
@@ -1212,7 +1403,221 @@ m_grn <- leaflet(data = p_fed_grn) %>%
   addPolygons(data = fed_elec, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = fed_elec$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
   addLegend(title = "Greens primary (%)", pal = pal_grn, values = c(0, 70), position = "bottomright") 
 
-saveWidget(m_grn, file="m_grn.html", selfcontained = F)
+# saveWidget(m_grn, file="m_grn.html", selfcontained = F)
+
+# CAPRICORNIA ----
+
+cap_reg <- read_csv(paste0(d,"data/cap_pp.csv"), skip = 0)
+
+prim_cap <- p_fed %>% 
+  filter(div == "Capricornia")
+
+prim_cap <- left_join(prim_cap, cap_reg, by = "pp")
+
+prim_cap_reg <- prim_cap %>%
+  group_by(party_n, year, region) %>% 
+  summarise(v = sum(v)) %>% 
+  group_by(year, region) %>% 
+  mutate(p = v / sum(v)) %>% 
+  ungroup() %>% 
+  arrange(party_n, region, year) %>% 
+  group_by(region) %>% 
+  mutate(s = p - lag(p, 1))
+
+f_prim_cap_lnp <- function(reg) {
+  
+  prim_cap_reg %>% 
+    filter(party_n == "NAT" & region == reg) %>% 
+    ggplot(aes(x = year, y = p * 100))  + 
+    geom_bar(stat = "identity", fill = "blue") +
+    theme_mc +
+    labs(title = paste("LNP votes in", reg, "region"), subtitle = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+    ylim(0, 60) +
+    theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+}
+
+p_prim_cap_lnp <- map(unique(prim_cap_reg$region), f_prim_cap_lnp) 
+
+names(p_prim_cap_lnp) <- unique(prim_cap_reg$region)
+
+f_prim_cap_alp <- function(reg) {
+  
+  prim_cap_reg %>% 
+    filter(party_n == "ALP" & region == reg) %>% 
+    ggplot(aes(x = year, y = p * 100))  + 
+    geom_bar(stat = "identity", fill = "red") +
+    theme_mc +
+    labs(title = paste("Labor votes in", reg, "region"), subtitle = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+    ylim(0, 70) +
+    theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+}
+
+p_prim_cap_alp <- map(unique(prim_cap_reg$region), f_prim_cap_alp) 
+
+names(p_prim_cap_alp) <- unique(prim_cap_reg$region)
+
+p_prim_cap_on <- prim_cap_reg %>% 
+  filter(party_n == "ON" & year == "2019" & region != "Other") %>% 
+  ggplot(aes(x = reorder(region, -p), y = p * 100))  + 
+  geom_bar(stat = "identity", fill = "orange") +
+  theme_mc +
+  labs(title = paste("One Nation vote in 2019"), subtitle = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+  ylim(0, 70) +
+  theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+
+# DAWSON ----
+
+# tidy
+
+daw_reg <- read_csv(paste0(d,"data/daw_pp.csv"), skip = 0)
+
+prim_daw <- p_by_pp %>% 
+  filter(div == "Dawson")
+
+prim_daw <- left_join(prim_daw, daw_reg, by = "pp")
+
+prim_daw_19 <- prim_daw %>% 
+  filter(year == "2019")
+
+prim_daw_19_lnp <- prim_daw_19 %>% 
+  filter(party == "LNP") %>% 
+  mutate(p = p * 100)
+
+tpp_daw <- tpp %>% 
+  filter(div %in% "Dawson" & p_lnp != 0) %>% 
+  drop_na()
+
+tpp_daw_19 <- tpp_daw %>% 
+  filter(year == "2019" & v_t > 100)
+
+# transform
+
+prim_daw_reg <- prim_daw %>%
+  group_by(party_n, year, region) %>% 
+  summarise(v = sum(v)) %>% 
+  group_by(year, region) %>% 
+  mutate(p = v / sum(v)) %>% 
+  ungroup() %>% 
+  arrange(party_n, region, year) %>% 
+  group_by(region) %>% 
+  mutate(s = p - lag(p, 1))
+
+# maps
+
+# swing tpp
+
+daw_map <- fed_elec[fed_elec$Elect_div %in% "Dawson", ]
+
+pal_daw <- colorBin(c("#ff1414", "#ff4e4e", "#ff8989", "#ffc4c4" ,"#c4c4ff" , "#8989ff" , "#4e4eff", "#1414ff"), domain = tpp_daw$swing, bins = c(-20, -15, -10, -5, 0, 5, 10, 15, 20))
+
+m_daw <- leaflet(data = tpp_daw_19_lnp) %>% 
+  addProviderTiles("CartoDB") %>% 
+  addCircleMarkers(data = tpp_daw_19_lnp, fillOpacity = 1, color = ~pal_daw(swing), radius = 3, stroke = FALSE, popup = ~popup_label, group = "Above 15%") %>% 
+  addCircleMarkers(data = tpp_daw_19 %>% filter(swing_15 == "Under 15%"), fillOpacity = 1, color = ~pal_daw(swing), radius = 3, stroke = FALSE, popup = ~popup_label, group = "Under 15%") %>% 
+  addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
+  addLegend(title = "TPP Swing to LNP (%)", pal = pal_daw, values = c(-30, 30), position = "bottomright") %>% 
+  addLayersControl(overlayGroups = c("Above 15%", "Under 15%"))
+
+# swing prim
+
+pal_daw_prim_s <- colorBin(c("#d80000", "#ff1414", "#ff4e4e", "#ff8989", "#ffc4c4" ,"#c4c4ff" , "#8989ff" , "#4e4eff", "#1414ff", "#0000d8"), domain = tpp_daw$swing, bins = c(-50, -20, -15, -10, -5, 0, 5, 10, 15, 20, 50))
+
+m_daw_prim_s <- leaflet(data = prim_daw_19_lnp) %>% 
+  addProviderTiles("CartoDB") %>% 
+  addCircleMarkers(data = prim_daw_19_lnp, fillOpacity = 1, color = ~pal_daw_prim_s(swing), radius = 3, stroke = FALSE, popup = ~popup_label) %>% 
+  addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
+  addLegend(title = "Primary Swing to LNP (%)", pal = pal_daw_prim_s, values = c(-50, 50), position = "bottomright")
+
+# prim
+
+pal_daw_prim <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = tpp_coal$p_lnp, bins = c(0, 30, 35, 40, mean(prim_daw_19_lnp$p, na.rm = T), 45, 50, 55, 100))
+
+m_daw_prim <- leaflet(data = prim_daw_19_lnp) %>% 
+  addProviderTiles("CartoDB") %>% 
+  addCircleMarkers(data = prim_daw_19_lnp, fillOpacity = 1, color = ~pal_daw_prim(p), radius = 3, stroke = FALSE, popup = ~popup_label) %>% 
+  addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
+  addLegend(title = "Primary LNP vote (%)", pal = pal_daw_prim, values = c(0, 100), position = "bottomright")
+
+# tpp
+
+pal_daw_tpp <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = tpp_coal$p_lnp, bins = c(0, 30, 40, 45, 50, 55, 60, 70, 100))
+
+m_daw_tpp <- leaflet(data = tpp_daw_19) %>% 
+  addProviderTiles("CartoDB") %>% 
+  addCircleMarkers(fillOpacity = 1, color = ~pal_daw_tpp(p_lnp), radius = 3, stroke = FALSE, popup = ~popup_label) %>% 
+  addPolygons(data = daw_map, color = "#696969", weight = 0.5, opacity = 1, fill = FALSE, label = daw_map$Elect_div, highlight = highlightOptions(weight = 2, color = "black", bringToFront = TRUE)) %>% 
+  addLegend(title = "LNP TPP (%)", pal = pal_daw_tpp, values = c(0, 100), position = "bottomright") 
+
+saveWidget(m_coal_tpp, file="m_daw_tpp.html")
+
+
+# plots
+
+f_prim_daw_lnp <- function(reg) {
+  
+  prim_daw_reg %>% 
+    filter(party_n == "NAT" & region == reg) %>% 
+    ggplot(aes(x = year, y = p * 100))  + 
+    geom_bar(stat = "identity", fill = "blue") +
+    theme_mc +
+    labs(title = paste("LNP votes in", reg, "region"), subtitle = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+    ylim(0, 60) +
+    theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+}
+
+p_prim_daw_lnp <- map(unique(prim_daw_reg$region), f_prim_daw_lnp) 
+
+names(p_prim_daw_lnp) <- unique(prim_daw_reg$region)
+
+f_prim_daw_alp <- function(reg) {
+  
+  prim_daw_reg %>% 
+    filter(party_n == "ALP" & region == reg) %>% 
+    ggplot(aes(x = year, y = p * 100))  + 
+    geom_bar(stat = "identity", fill = "red") +
+    theme_mc +
+    labs(title = paste("Labor votes in", reg, "region"), subtitle = "", x = "", y = "") +
+    theme(panel.grid.major = element_blank()) +
+    geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+    ylim(0, 70) +
+    theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+}
+
+p_prim_daw_alp <- map(unique(prim_daw_reg$region), f_prim_daw_alp) 
+
+names(p_prim_daw_alp) <- unique(prim_daw_reg$region)
+
+p_prim_daw_on <- prim_daw_reg %>% 
+  filter(party_n == "ON" & year == "2019" & region != "Other") %>% 
+  ggplot(aes(x = reorder(region, -p), y = p * 100))  + 
+  geom_bar(stat = "identity", fill = "orange") +
+  theme_mc +
+  labs(title = paste("One Nation vote in 2019"), subtitle = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+  ylim(0, 70) +
+  theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+
+
+p_prim_daw_kap <- prim_daw_reg %>% 
+  filter(party_n == "KAP" & year == "2019" & region != "Other") %>% 
+  ggplot(aes(x = reorder(region, -p), y = p * 100))  + 
+  geom_bar(stat = "identity", fill = "maroon") +
+  theme_mc +
+  labs(title = paste("Katter vote in 2019"), subtitle = "", x = "", y = "") +
+  theme(panel.grid.major = element_blank()) +
+  geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
+  ylim(0, 70) +
+  theme(axis.text = element_text(size = 8, vjust = 0.3, hjust = 0.5))
+
 
 # EXPORT ---- 
 

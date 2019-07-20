@@ -108,6 +108,38 @@ grid.arrange(p_pd_coal$Flynn, p_pd_coal$Capricornia, p_pd_coal$Dawson, p_pd_coal
 
 ---
 
+# Labor primary vote has collapsed
+
+``` {r }
+grid.arrange(p_prim_cap_alp$Rockhampton, p_prim_cap_alp$Coast, p_prim_cap_alp$Mining, p_prim_cap_alp$Sarina, ncol = 2)
+```
+
+---
+
+# LNP primary vote has stabilised
+
+``` {r }
+grid.arrange(p_prim_cap_lnp$Rockhampton, p_prim_cap_lnp$Coast, p_prim_cap_lnp$Mining, p_prim_cap_lnp$Sarina, ncol = 2)
+```
+
+---
+
+# One Nation strongest in rural areas
+
+``` {r }
+p_prim_cap_on
+```
+
+---
+
+# Map of results
+
+```{r }
+frameWidget(m_aus, width='100%', height = '500px')
+```
+
+---
+
 # Polling booths in Herbert
 
 
