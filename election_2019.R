@@ -1861,7 +1861,7 @@ f_prim_daw_alp_sub <- function(subr) {
     ggplot(aes(x = year, y = p * 100))  + 
     geom_bar(stat = "identity", fill = "red") +
     theme_mc +
-    labs(title = paste("LNP votes in", subr, "region"), subtitle = "", x = "", y = "") +
+    labs(title = paste("Labor votes in", subr, "region"), subtitle = "", x = "", y = "") +
     theme(panel.grid.major = element_blank()) +
     geom_text(aes(label = paste(round(p * 100,1))), vjust = -1, size=3) +
     ylim(0, 60) +
