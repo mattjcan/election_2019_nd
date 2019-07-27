@@ -304,10 +304,6 @@ tcp <- tcp  %>%
          v_t = TotalVotes, 
          swing = Swing)
 
-# tcp[tcp$div == "New England" & tcp$party == "NP" & tcp$year == "2019", ]$swing <- 13.82
-
-# tcp[tcp$div == "New England" & tcp$party == "IND" & tcp$year == "2019", ]$swing <- -13.82
-
 #tcp_n <- tcp
 
 #tcp_n$party_n <- ifelse(tcp_n$party == "NP", "NAT", ifelse((tcp_n$div %in% lnp_nats_seats & tcp_n$party %in% c("LNP", "LNQ")), "NAT", ifelse((tcp_n$div %in% clp_nats_seats & tcp_n$party == "CLP"), "NAT", tcp_n$party)))
@@ -327,7 +323,12 @@ tcp <- tcp %>%
             p_lnp = v_lnp / v_t * 100,
             p_alp = v_alp / v_t * 100)
 
-tcp <- left_join(tcp, tcp_lnp, by = "div")
+tcp <- tcp %>% 
+  group_by(div) %>%
+  arrange(div, year) %>% 
+  mutate(swing = p_lnp - lag(p_lnp, 1))
+
+#tcp <- left_join(tcp, tcp_lnp, by = "div")
 
 #tcp_by_party <- tcp_n %>% 
  # group_by(year, party_n) %>% 
@@ -335,7 +336,7 @@ tcp <- left_join(tcp, tcp_lnp, by = "div")
   #ungroup() %>% 
   #mutate(p = v / sum(v))
 
-# TRANSFORM ---- 
+# TRANSFORM ---- %>% 
 
 
   
@@ -810,7 +811,7 @@ pd_by_party %>%
   geom_text(aes(label = paste(round(swing * 100,1)), vjust = ifelse(swing >= 0, -1, 1.5)), size=3) +
   scale_fill_manual(values = c(Liberal = "blue", Labor = "red", Greens = "green", Nationals = "dark green", Independent = "grey", Palmer = "yellow", "One Nation" = "orange", Xenophon = "orange", "Family First" = "light blue", CDP = "light blue")) +
   theme(axis.text.x = element_text(size = 8, angle = 90, vjust = 0.3, hjust = 1)) +
-  ylim(-10,10)
+  ylim(-3,5)
 }
 
 p_party_swing <- map(unique(pd_by_party$year), f_party_swing)
@@ -1688,7 +1689,7 @@ p_prim_daw_subreg_s_alp <- prim_daw_subreg %>%
   ggplot(aes(x = reorder(subregion, -s), y = s * 100))  + 
   geom_bar(stat = "identity", fill = "red") +
   theme_mc +
-  labs(title = paste("ALP primary vote swing in 2019"), subtitle = "", x = "", y = "") +
+  labs(title = paste("Labor primary vote swing in 2019"), subtitle = "", x = "", y = "") +
   theme(panel.grid.major = element_blank()) +
   geom_text(aes(label = paste(round(s * 100,1)), vjust = ifelse(s >= 0, -1, 1.5)), size=3) +
   theme(axis.text = element_text(size = 7, vjust = 0.3, hjust = 0.5)) +

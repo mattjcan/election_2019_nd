@@ -19,11 +19,9 @@ source("election_2019.R")
 
 # Primary votes by party
 
-- The Nationals were the only major party to receive a positive swing at the 2019 election - albeit a small one of 0.3 per cent. 
+- The Nationals held their primary vote at the 2019 election despite significant swings to One Nation and the United Australia Party. The Liberal and Labor parties experienced swings away from them. 
 
-- The Nationals party is the only major party to have received positive swings over the past 3 elections.
-
-``` {r fig.height = 3.5}
+``` {r fig.height = 4}
 p_party_swing$`2019`
 ```
 
@@ -39,7 +37,7 @@ grid.arrange(p_party$`2019`, p_party$`2016`, p_party$`2013`, p_party$`2010`, nco
   
 # Liberals v Nationals over last decade
 
-- Since the 2013 landslide election the Nationals party has consolidated its primary vote and increased it by 5 per cent. In comparison, the Liberal party primary vote has fallen by just over 10 per cent. 
+- Since the 2013 landslide election the Nationals party has held its primary vote with only a small decrease. In comparison, the Liberal party primary vote has fallen by just over 10 per cent. 
 
 NB: This is in percentage terms not "percentage point" terms. 
   
@@ -59,13 +57,12 @@ p_nats_prim
 
 ---
   
-# Nationals seats and proportion of Coalition over time
+# Nationals seats 
   
-``` {r fig.height = 3.5}
+``` {r }
 grid.arrange(p_nats_seats, p_nats_prop, ncol = 1)
 ```
 
-NB: Assumes Perin Davey is elected as a NSW Senator.
 ---
   
 # Primary votes in Nationals electorates
@@ -96,32 +93,9 @@ p_nats_tpp
   
 # TPP vote swings in Nationals electorates
 
-- The Nationals acheived a positive swing in 10 of the 13 seats where we are in the final two party preferred count.
-
-NB: This only includes seats were a the AEC has calculaated a TPP between the LNP and ALP. For example, such a count for Maranoa or New England has not yet been completed.
-  
-``` {r fig.height = 3}
-p_nats_swing_tpp
-```
-
----
-
-# TCP votes in Nationals electorates
-
-- The Nationals no longer hold a seat that fits within the traditional defintion of marginal, that is less than 5 per cent margin.
+- The Nationals acheived a positive swing in 12 of the 16 seats where we are in the final two party preferred count.
   
 ``` {r fig.height = 4}
-p_nats_tcp
-```
-
----
-  
-# TCP vote swings in Nationals electorates
-
-- The independent challengers did not perform well against the Nationals. Rob Oakeshott fell 7.3 per cent short, and in Maranoa and New England, One Nation and independent canidates were beaten by more than 20 per cent.
-
-  
-``` {r fig.height = 3.5}
-p_nats_swing_tcp
+p_nats_swing_tpp
 ```
 
