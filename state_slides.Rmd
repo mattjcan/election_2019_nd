@@ -1,0 +1,240 @@
+---
+title: "Federal election results in state divisions"
+author: 
+date: 
+output:
+  xaringan::moon_reader:
+    css: ["default", "libs/mjc-css/mjc-theme.css", "libs/mjc-css/mjc-fonts.css"]
+    lib_dir: libs
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, dpi = 300, fig.height = 5)
+
+library(knitr)
+
+source("election_2019.R")
+```
+
+# Federal results in state divisions
+
+- The best target seats for the LNP are in Central Queensland: Mirani, Whitsunday, Mackay and Mackay (not including Katter seats).
+
+``` {r fig.height = 4}
+p_tpp_state_1
+```
+
+---
+
+# Federal results in state divisions
+
+- The LNP needs 9 seats to win. If it wins Mirani and Whitsdunday, its next best targets against Labor include Mackay, Keppel, Gaven, Maryborough, Townsville, Macallister and Redcliffe. 
+
+- The LNP won the most marginal of these seats (Redcliffe) with 58.5 per cent support and 6 of these 9 seats are regional. 
+
+``` {r fig.height = 3}
+p_tpp_state_2
+```
+
+---
+
+# Federal results in state divisions
+
+- If the Federal election results were repeated, Labor would be reduced to just 18 seats. 
+
+``` {r fig.height = 4}
+p_tpp_state_3
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[1]], p_p_state[[2]], p_p_state[[3]], p_p_state[[4]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[5]], p_p_state[[6]], p_p_state[[7]], p_p_state[[8]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[9]], p_p_state[[10]], p_p_state[[11]], p_p_state[[12]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[13]], p_p_state[[14]], p_p_state[[15]], p_p_state[[16]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[17]], p_p_state[[18]], p_p_state[[19]], p_p_state[[20]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[21]], p_p_state[[22]], p_p_state[[23]], p_p_state[[24]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[25]], p_p_state[[26]], p_p_state[[27]], p_p_state[[28]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[29]], p_p_state[[30]], p_p_state[[31]], p_p_state[[32]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[33]], p_p_state[[34]], p_p_state[[35]], p_p_state[[36]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[37]], p_p_state[[38]], p_p_state[[39]], p_p_state[[40]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[41]], p_p_state[[42]], p_p_state[[43]], p_p_state[[44]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[45]], p_p_state[[46]], p_p_state[[47]], p_p_state[[48]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[49]], p_p_state[[50]], p_p_state[[51]], p_p_state[[52]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[53]], p_p_state[[54]], p_p_state[[55]], p_p_state[[56]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[57]], p_p_state[[58]], p_p_state[[59]], p_p_state[[60]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[61]], p_p_state[[62]], p_p_state[[63]], p_p_state[[64]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[65]], p_p_state[[66]], p_p_state[[67]], p_p_state[[68]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[69]], p_p_state[[70]], p_p_state[[71]], p_p_state[[72]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[73]], p_p_state[[74]], p_p_state[[75]], p_p_state[[76]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[77]], p_p_state[[78]], p_p_state[[79]], p_p_state[[80]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[81]], p_p_state[[82]], p_p_state[[83]], p_p_state[[84]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[85]], p_p_state[[86]], p_p_state[[87]], p_p_state[[88]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+grid.arrange(p_p_state[[89]], p_p_state[[90]], p_p_state[[91]], p_p_state[[92]], ncol = 2)
+```
+
+---
+
+# Federal results in state divisions
+
+``` {r }
+p_p_state[[93]]
+```

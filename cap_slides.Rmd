@@ -102,18 +102,18 @@ grid.arrange(p_pd_coal$Flynn, p_pd_coal$Capricornia, p_pd_coal$Dawson, p_pd_coal
 
 ---
 
-# Strong primary vote across Dawson
+# Varation in primary vote across Capricornia
 
 ``` {r }
-p_prim_daw_subreg
+p_prim_cap_subreg
 ```
 
 ---
 
-# But there were mixed swings on primaries
+# And there were mixed swings on primaries
 
 ``` {r }
-p_prim_daw_subreg_s
+p_prim_cap_subreg_s
 ```
 
 ---
@@ -121,23 +121,15 @@ p_prim_daw_subreg_s
 # All regions provided a TPP swing
 
 ``` {r }
-p_tpp_daw_subreg_s
+p_tpp_cap_subreg_s
 ```
 
 ---
 
-# Leaving a strong TPP outcome in Dawson
+# Leaving a strong TPP outcome in Capricornia
 
 ``` {r }
-p_tpp_daw_subreg
-```
-
----
-
-# The Labor vote collapsed
-
-``` {r }
-p_prim_daw_subreg_s_alp
+p_tpp_cap_subreg
 ```
 
 ---
@@ -145,7 +137,15 @@ p_prim_daw_subreg_s_alp
 # The Labor vote collapsed
 
 ``` {r }
-p_prim_daw_subreg_alp
+p_prim_cap_subreg_s_alp
+```
+
+---
+
+# The Labor vote collapsed
+
+``` {r }
+p_prim_cap_subreg_alp
 ```
 
 ---
@@ -153,7 +153,7 @@ p_prim_daw_subreg_alp
 # The right wing vote is concentrated
 
 ``` {r }
-p_prim_daw_subreg_rw
+p_prim_cap_subreg_rw
 ```
 
 ---
@@ -161,7 +161,7 @@ p_prim_daw_subreg_rw
 # LNP primary vote over time
 
 ``` {r }
-grid.arrange(p_prim_daw_lnp_sub$Airlie, p_prim_daw_lnp_sub$Bowen, p_prim_daw_lnp_sub$Burdekin, p_prim_daw_lnp_sub$Townsville, ncol = 2)
+grid.arrange(p_prim_cap_lnp_sub$`Rocky - north`, p_prim_cap_lnp_sub$`Rocky - south`, p_prim_cap_lnp_sub$Coast, p_prim_cap_lnp_sub$Rural, ncol = 2)
 ```
 
 ---
@@ -169,7 +169,7 @@ grid.arrange(p_prim_daw_lnp_sub$Airlie, p_prim_daw_lnp_sub$Bowen, p_prim_daw_lnp
 # LNP primary vote over time
 
 ``` {r }
-grid.arrange(p_prim_daw_lnp_sub$`Mackay - north`, p_prim_daw_lnp_sub$`Mackay - south`, p_prim_daw_lnp_sub$Islands, p_prim_daw_lnp_sub$Rural, ncol = 2)
+grid.arrange(p_prim_cap_lnp_sub$Mining, p_prim_cap_lnp_sub$Sarina, p_prim_cap_lnp_sub$Mackay, p_prim_cap_lnp_sub$Pioneer, ncol = 2)
 ```
 
 ---
@@ -177,7 +177,7 @@ grid.arrange(p_prim_daw_lnp_sub$`Mackay - north`, p_prim_daw_lnp_sub$`Mackay - s
 # Labor primary vote over time
 
 ``` {r }
-grid.arrange(p_prim_daw_alp_sub$Airlie, p_prim_daw_alp_sub$Bowen, p_prim_daw_alp_sub$Burdekin, p_prim_daw_alp_sub$Townsville, ncol = 2)
+grid.arrange(p_prim_cap_alp_sub$`Rocky - north`, p_prim_cap_alp_sub$`Rocky - south`, p_prim_cap_alp_sub$Coast, p_prim_cap_alp_sub$Rural, ncol = 2)
 ```
 
 ---
@@ -185,7 +185,7 @@ grid.arrange(p_prim_daw_alp_sub$Airlie, p_prim_daw_alp_sub$Bowen, p_prim_daw_alp
 # Labor primary vote over time
 
 ``` {r }
-grid.arrange(p_prim_daw_alp_sub$`Mackay - north`, p_prim_daw_alp_sub$`Mackay - south`, p_prim_daw_alp_sub$Islands, p_prim_daw_alp_sub$Rural, ncol = 2)
+grid.arrange(p_prim_cap_alp_sub$Mining, p_prim_cap_alp_sub$Sarina, p_prim_cap_alp_sub$Mackay, p_prim_cap_alp_sub$Pioneer, ncol = 2)
 ```
 
 ---
@@ -193,7 +193,7 @@ grid.arrange(p_prim_daw_alp_sub$`Mackay - north`, p_prim_daw_alp_sub$`Mackay - s
 # TPP results
 
 ```{r }
-frameWidget(m_daw_tpp, width='100%', height = '500px')
+frameWidget(m_cap_tpp, width='100%', height = '500px')
 ```
 
 ---
@@ -201,7 +201,7 @@ frameWidget(m_daw_tpp, width='100%', height = '500px')
 # TPP swing
 
 ```{r }
-frameWidget(m_daw, width='100%', height = '500px')
+frameWidget(m_cap, width='100%', height = '500px')
 ```
 
 ---
@@ -209,7 +209,7 @@ frameWidget(m_daw, width='100%', height = '500px')
 # Primary results
 
 ```{r }
-frameWidget(m_daw_prim, width='100%', height = '500px')
+frameWidget(m_cap_prim, width='100%', height = '500px')
 ```
 
 ---
@@ -217,37 +217,221 @@ frameWidget(m_daw_prim, width='100%', height = '500px')
 # Primary results
 
 ```{r }
-frameWidget(m_daw_prim_s, width='100%', height = '500px')
+frameWidget(m_cap_prim_s, width='100%', height = '500px')
 ```
 
 ---
 
-# Polling booths in Dawson
+# Polling booths in Capricornia
 
 ``` {r }
-p_tpp_pp$Dawson
+p_tpp_pp$Capricornia
 ```
 
 ---
 
-# Polling booth swings in Dawson
+# Polling booth swings in Capricornia
 
 ``` {r }
-p_tpp_pp_swing$Dawson
+p_tpp_pp_swing$Capricornia
 ```
 
 ---
 
-# Polling booths in Dawson
+# Polling booths in Capricornia
 
 ``` {r }
-p_prim_pp_daw
+p_prim_pp_cap
 ```
 
 ---
 
-# Polling booth swings in Dawson
+# Polling booth swings in Capricornia
 
 ``` {r }
-p_prim_pp_swing_daw
+p_prim_pp_swing_cap
+```
+
+---
+
+# Varation in primary vote across Flynn
+
+``` {r }
+p_prim_fly_subreg
+```
+
+---
+
+# And there were mixed swings on primaries
+
+``` {r }
+p_prim_fly_subreg_s
+```
+
+---
+
+# All regions provided a TPP swing
+
+``` {r }
+p_tpp_fly_subreg_s
+```
+
+---
+
+# Leaving a strong TPP outcome in Flynn
+
+``` {r }
+p_tpp_fly_subreg
+```
+
+---
+
+# The Labor vote collapsed
+
+``` {r }
+p_prim_fly_subreg_s_alp
+```
+
+---
+
+# The Labor vote collapsed
+
+``` {r }
+p_prim_fly_subreg_alp
+```
+
+---
+
+# The right wing vote is concentrated
+
+``` {r }
+p_prim_fly_subreg_rw
+```
+
+---
+
+# LNP primary vote over time
+
+``` {r }
+grid.arrange(p_prim_fly_lnp_sub$Gladstone, p_prim_fly_lnp_sub$`Greater Gladstone`, p_prim_fly_lnp_sub$Rockhampton, p_prim_fly_lnp_sub$Emerald, ncol = 2)
+```
+
+---
+
+# LNP primary vote over time
+
+``` {r }
+grid.arrange(p_prim_fly_lnp_sub$Mining, p_prim_fly_lnp_sub$Rural, p_prim_fly_lnp_sub$`Wide Bay`, p_prim_fly_lnp_sub$Burnett, ncol = 2)
+```
+
+---
+
+# Labor primary vote over time
+
+``` {r }
+grid.arrange(p_prim_fly_alp_sub$Gladstone, p_prim_fly_alp_sub$`Greater Gladstone`, p_prim_fly_alp_sub$Rockhampton, p_prim_fly_alp_sub$Emerald, ncol = 2)
+```
+
+---
+
+# Labor primary vote over time
+
+``` {r }
+grid.arrange(p_prim_fly_alp_sub$Mining, p_prim_fly_alp_sub$Rural, p_prim_fly_alp_sub$`Wide Bay`, p_prim_fly_alp_sub$Burnett, ncol = 2)
+```
+
+---
+
+# TPP results
+
+```{r }
+frameWidget(m_fly_tpp, width='100%', height = '500px')
+```
+
+---
+
+# TPP swing
+
+```{r }
+frameWidget(m_fly, width='100%', height = '500px')
+```
+
+---
+
+# Primary results
+
+```{r }
+frameWidget(m_fly_prim, width='100%', height = '500px')
+```
+
+---
+
+# Primary results
+
+```{r }
+frameWidget(m_fly_prim_s, width='100%', height = '500px')
+```
+
+---
+
+# Polling booths in Flynn
+
+``` {r }
+p_tpp_flynn_1
+```
+
+---
+
+# Polling booths in Flynn
+
+``` {r }
+p_tpp_flynn_2
+```
+
+---
+
+# Polling booth swings in Flynn
+
+``` {r }
+p_tpp_flynn_1_swing
+```
+
+---
+
+# Polling booth swings in Flynn
+
+``` {r }
+p_tpp_flynn_2_swing
+```
+
+---
+
+# Preference flows
+
+``` {r }
+p_dop_cq
+```
+
+---
+
+# Central Queensland state seats
+
+``` {r }
+p_tpp_state_cq
+```
+
+---
+
+# Central Queensland state seats
+
+``` {r }
+grid.arrange(p_p_state$Mirani, p_p_state$Keppel, p_p_state$Rockhampton, p_p_state$Gladstone, ncol = 2) 
+```
+
+---
+
+# Central Queensland state seats
+
+``` {r }
+grid.arrange(p_p_state$Gregory, p_p_state$Burdekin, p_p_state$Mackay, p_p_state$Burnett, ncol = 2) 
 ```
