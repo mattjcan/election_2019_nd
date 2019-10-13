@@ -40,7 +40,7 @@ line_color <- "#2166ac"
 
 # IMPORT ------------------------------------------------------------------
 
-d <- "C:/Users/matt/data_nd/election_2019_nd/" # parent directory for the data
+d <- "C:/Users/matt/Documents/R/election_2019_nd/" # parent directory for the data
 
 prepoll <- read_csv(paste0(d,"data/20190516_WEB_Pre-poll_Report_FE2019.csv"), skip = 0)
 
@@ -161,6 +161,9 @@ coal_seats <- c("Herbert", "Dawson", "Capricornia", "Flynn")
 fed_elec <- readOGR(paste0(d,"data/COM_ELB_region.shx"))
 
 qld_elec <- readOGR(paste0(d,"data/State_electoral_boundaries_2017.shx"))
+
+
+
 
 # TIDY ----
 
@@ -3059,6 +3062,272 @@ p_tpp_state_cq <- tpp_qld_state_19 %>%
   scale_fill_manual(values = c(lnp = "blue", alp = "red", on = "orange", kap = "maroon", ind = "yellow", grn = "green")) +
   ylim(0, 100)
 
+# sa1 analsyis ----
+
+# data
+
+sa1_map <- readOGR(paste0(d,"data/SA1_2016_AUST.shx"))
+
+sa2_map <- readOGR(paste0(d,"data/SA2_2016_AUST.shx"))
+
+sa1 <- read_csv(paste0(d,"data/polling-place-by-sa1s-2019.csv"), skip = 0)
+
+vt <- read_csv(paste0(d,"data/HouseTppByDivisionByVoteTypeDownload-24310.csv"), skip = 1)
+
+
+
+# informals 
+
+p19_inf <- p19 %>% filter(Surname == "Informal")
+
+p19_inf <- p19_inf %>% 
+  select(PollingPlaceID, OrdinaryVotes) %>% 
+  rename(pp_id = PollingPlaceID,
+         v_inf = OrdinaryVotes)
+
+pd19_inf <- pd19 %>% filter(Surname == "Informal")
+
+pd19_inf <- pd19_inf[,c(3,13,14,15,16)]
+
+pd19_inf <- pd19_inf %>% 
+  rename(div_nm = DivisionNm,
+         absent_inf = AbsentVotes,
+         prov_inf = ProvisionalVotes,
+         pre_inf = PrePollVotes,
+         post_inf = PostalVotes)
+
+# other votes
+
+vt <- vt[,c(1,2,3,4,9,11,13,15,17,19,22,24)]
+
+vt <- vt %>% 
+  rename(absent_lnp = "Liberal/National Coalition AbsentVotes",
+         absent_alp = "Australian Labor Party AbsentVotes",
+         prov_lnp = "Liberal/National Coalition ProvisionalVotes",
+         prov_alp = "Australian Labor Party ProvisionalVotes",
+         post_lnp = "Liberal/National Coalition PostalVotes",
+         post_alp = "Australian Labor Party PostalVotes",
+         pre_lnp = "Liberal/National Coalition DeclarationPrePollVotes",
+         pre_alp = "Australian Labor Party DeclarationPrePollVotes")
+
+vt <- vt %>% 
+  select(-DivisionID) %>% 
+  rename(div_nm = DivisionNm)
+
+# sa1 data
+
+sa1_cap <- sa1 %>% filter(div_nm == "Capricornia")
+
+sa1_cap_other <- sa1_cap %>% 
+  filter(pp_id == 0) %>% 
+  group_by(pp_nm) %>% 
+  summarise(votes = sum(votes))
+
+# tpp_div_19_cap <- tpp_div_19 %>% filter(div == "Capricornia")
+
+sa1 <- sa1 %>% 
+  group_by(year, state_ab, div_nm, pp_id, pp_nm) %>% 
+  mutate(p_sa1 = votes / sum(votes)) %>% 
+  arrange(pp_nm)
+
+tpp_19 <- tpp %>% 
+  filter(year == "2019")
+
+sa1_t <- left_join(sa1, tpp_19, by = "pp_id")
+
+sa1_t <- left_join(sa1_t, p19_inf, by = "pp_id")
+
+sa1_t <- sa1_t %>% 
+  mutate(v_lnp_sa1 = p_sa1 * v_lnp,
+         v_alp_sa1 = p_sa1 * v_alp,
+         v_inf_sa1 = p_sa1 * v_inf,
+         v_t_sa1 = v_lnp_sa1 + v_alp_sa1 + v_inf_sa1)
+
+sa1_oth <- sa1_t %>% filter(pp_id == 0)
+
+sa1_t <- sa1_t %>% filter(pp_id != 0)
+
+sa1_oth <- sa1_oth[,1:8]
+
+sa1_oth <- left_join(sa1_oth, vt, by = "div_nm")
+
+sa1_oth <- left_join(sa1_oth, pd19_inf, by = "div_nm")
+
+sa1_absent <- sa1_oth %>% 
+  ungroup() %>% 
+  filter(pp_nm == "Absent") %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, absent_lnp, absent_alp, absent_inf) %>% 
+  mutate(v_lnp_sa1 = p_sa1 * absent_lnp,
+         v_alp_sa1 = p_sa1 * absent_alp,
+         v_inf_sa1 = p_sa1 * absent_inf,
+         v_t_sa1 = v_lnp_sa1 + v_alp_sa1 + v_inf_sa1) %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, v_lnp_sa1, v_alp_sa1, v_inf_sa1, v_t_sa1)
+
+sa1_post <- sa1_oth %>% 
+  ungroup() %>% 
+  filter(pp_nm == "Postal") %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, post_lnp, post_alp, post_inf) %>% 
+  mutate(v_lnp_sa1 = p_sa1 * post_lnp,
+         v_alp_sa1 = p_sa1 * post_alp,
+         v_inf_sa1 = p_sa1 * post_inf,
+         v_t_sa1 = v_lnp_sa1 + v_alp_sa1 + v_inf_sa1) %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, v_lnp_sa1, v_alp_sa1, v_inf_sa1, v_t_sa1)
+
+sa1_pre <- sa1_oth %>% 
+  ungroup() %>% 
+  filter(pp_nm == "Pre-Poll") %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, pre_lnp, pre_alp, pre_inf) %>% 
+  mutate(v_lnp_sa1 = p_sa1 * pre_lnp,
+         v_alp_sa1 = p_sa1 * pre_alp,
+         v_inf_sa1 = p_sa1 * pre_inf,
+         v_t_sa1 = v_lnp_sa1 + v_alp_sa1 + v_inf_sa1) %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, v_lnp_sa1, v_alp_sa1, v_inf_sa1, v_t_sa1)
+
+sa1_prov <- sa1_oth %>% 
+  ungroup() %>% 
+  filter(pp_nm == "Provisional") %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, prov_lnp, prov_alp, prov_inf) %>% 
+  mutate(v_lnp_sa1 = p_sa1 * prov_lnp,
+         v_alp_sa1 = p_sa1 * prov_alp,
+         v_inf_sa1 = p_sa1 * prov_inf,
+         v_t_sa1 = v_lnp_sa1 + v_alp_sa1 + v_inf_sa1) %>% 
+  select(year.x, state_ab, div_nm, SA1_id, pp_id, pp_nm, votes, p_sa1, v_lnp_sa1, v_alp_sa1, v_inf_sa1, v_t_sa1)
+
+sa1_t <- bind_rows(sa1_t, sa1_absent, sa1_post, sa1_pre, sa1_prov)
+
+sa1_t2 <- sa1_t %>% 
+  ungroup() %>% 
+  select(year.x,
+         state_ab,
+         div_nm,
+         SA1_id,
+         pp_id,
+         pp_nm,
+         votes,
+         p_sa1,
+         v_lnp_sa1,
+         v_alp_sa1,
+         v_inf_sa1,
+         v_t_sa1)
+  
+
+sa1_t2 <- sa1_t2 %>% 
+  ungroup() %>% 
+  group_by(year.x, state_ab, SA1_id) %>% 
+  summarise(v_lnp_sa1 = sum(v_lnp_sa1, na.rm = T),
+            v_alp_sa1 = sum(v_alp_sa1, na.rm = T),
+            v_inf_sa1 = sum(v_inf_sa1, na.rm = T),
+            v_t_sa1 = sum(v_t_sa1, na.rm = T)) %>% 
+  rename(SA1_7DIG16 = SA1_id,
+         year = year.x) %>% 
+  mutate(p_lnp_sa1 = (v_lnp_sa1 / (v_lnp_sa1 + v_alp_sa1)) * 100)
+
+sa1_t2$SA2_5DIG16 <- str_extract(sa1_t2$SA1_7DIG16, "^.{5}")
+
+sa2 <- sa1_t2 %>% 
+  ungroup() %>% 
+  group_by(year, state_ab, SA2_5DIG16) %>% 
+  summarise(v_lnp_sa2 = sum(v_lnp_sa1, na.rm = T),
+            v_alp_sa2 = sum(v_alp_sa1, na.rm = T),
+            v_t_sa2 = sum(v_t_sa1, na.rm = T)) %>% 
+  mutate(p_lnp_sa2 = v_lnp_sa2 / v_t_sa2 * 100)
+
+
+
+
+
+# maps
+
+sa1_map <- sp::merge(sa1_map, sa1_t2, by = "SA1_7DIG16", all=F)
+
+sa2_map <- sp::merge(sa2_map, sa2, by = "SA2_5DIG16", all=F)
+
+pal_t <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = sa1_map$p_lnp_sa1, bins = c(0, 30, 40, 45, 50, 55, 60, 70, 100))
+
+labels <- sprintf(
+  "<strong>%s</strong><br/>%g per cent",
+  sa1_map$SA1_7DIG16, sa1_map$v_lnp_sa1
+) %>% lapply(htmltools::HTML)
+
+
+m_sa1 <- leaflet(data = sa1_map) %>% 
+  addProviderTiles("CartoDB") %>%  
+  addPolygons(fillColor = ~pal_t(p_lnp_sa1), fillOpacity = 1, weight = 0.5, color = "black", smoothFactor = 0) 
+
+sa1_map_nt <- sa1_map[sa1_map$STE_NAME16 == "Northern Territory", ]
+
+pal_t_nt <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = sa1_map_nt$p_lnp_sa1, bins = c(0, 30, 40, 45, 50, 55, 60, 70, 100))
+
+labels_nt <- sprintf(
+  "<strong>%s</strong><br/>LNP TPP: %g %%<br/>Total votes: %g",
+  sa1_map_nt$SA1_7DIG16, round(sa1_map_nt$p_lnp_sa1,1), round(sa1_map_nt$v_t_sa1,0)
+) %>% lapply(htmltools::HTML)
+
+m_sa1_nt <- leaflet(data = sa1_map_nt) %>% 
+  addProviderTiles("CartoDB") %>%  
+  addPolygons(fillColor = ~pal_t_nt(p_lnp_sa1), fillOpacity = 1, weight = 0.5, color = "black", smoothFactor = 0, highlight = highlightOptions(
+    weight = 3,
+    color = "white",
+    fillOpacity = 1,
+    bringToFront = TRUE),
+    label = labels_nt,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "12px",
+      direction = "auto")) 
+
+sa2_map_nt <- sa2_map[sa2_map$STE_NAME16 == "Northern Territory", ]
+
+pal_t_nt <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = sa2_map_nt$p_lnp_sa2, bins = c(0, 30, 40, 45, 50, 55, 60, 70, 100))
+
+labels_nt <- sprintf(
+  "<strong>%s</strong><br/>LNP TPP: %g %%<br/>Total votes: %g",
+  sa2_map_nt$SA2_NAME16, round(sa2_map_nt$p_lnp_sa2,1), round(sa2_map_nt$v_t_sa2,0)
+) %>% lapply(htmltools::HTML)
+
+m_sa2_nt <- leaflet(data = sa2_map_nt) %>% 
+  addProviderTiles("CartoDB") %>%  
+  addPolygons(fillColor = ~pal_t_nt(p_lnp_sa2), fillOpacity = 1, weight = 0.5, color = "black", smoothFactor = 0, highlight = highlightOptions(
+    weight = 3,
+    color = "white",
+    fillOpacity = 1,
+    bringToFront = TRUE),
+    label = labels_nt,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "12px",
+      direction = "auto")) 
+
+
+
+
+pal_t <- colorBin(c("#990000", "#ff0000", "#ff9999", "#ffcccc", "#9999ff", "#ccccff", "#0000ff", "#0000b3"), domain = sa2_map$p_lnp_sa2, bins = c(0, 30, 40, 45, 50, 55, 60, 70, 100))
+
+labels <- sprintf(
+  "<strong>%s</strong><br/>LNP TPP: %g %%<br/>Total votes: %g",
+  sa2_map$SA2_NAME16, round(sa2_map$p_lnp_sa2,1), round(sa2_map$v_t_sa2,0)
+) %>% lapply(htmltools::HTML)
+
+m_sa2 <- leaflet(data = sa2_map) %>% 
+  addProviderTiles("CartoDB") %>%  
+  addPolygons(fillColor = ~pal_t(p_lnp_sa2), fillOpacity = 1, weight = 0.5, color = "black", smoothFactor = 0, highlight = highlightOptions(
+    weight = 3,
+    color = "white",
+    fillOpacity = 1,
+    bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "12px",
+      direction = "auto")) 
+
+
+
+
+
+
+
+
 
 # EXPORT ---- 
 
@@ -3093,3 +3362,4 @@ dev.off()
 png("images/p_act.png", width = 6, height = 3, units = "in", res = 300)
 p_act
 dev.off() 
+
